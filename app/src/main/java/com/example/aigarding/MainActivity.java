@@ -5,20 +5,17 @@ import android.accessibilityservice.AccessibilityServiceInfo;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Point;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,7 +34,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "MainActivity";
     private static final int REQUEST_CODE_SCREEN_CAPTURE = 1001;
     private static final int REQUEST_CODE_PERMISSIONS = 1002;
 
@@ -47,11 +43,10 @@ public class MainActivity extends AppCompatActivity {
     private boolean isRunning = false;
     private int totalGraded = 0;
 
-    private EditText etApiKey, etModelId, etReferenceAnswer;
-    private EditText etAreaLeft, etAreaTop, etAreaRight, etAreaBottom;
+    private EditText etApiKey, etModelId, etReferenceAnswer, etArea;
     private LinearLayout llScoreButtons;
-    private TextView tvStatus, tvCurrentScore, tvTotalGraded;
-    private Button btnStart, btnStop, btnSaveConfig, btnAddScoreButton, btnTestClick;
+    private TextView tvStatus;
+    private Button btnStart, btnStop, btnAddScore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,26 +63,14 @@ public class MainActivity extends AppCompatActivity {
         etApiKey = findViewById(R.id.et_api_key);
         etModelId = findViewById(R.id.et_model_id);
         etReferenceAnswer = findViewById(R.id.et_reference_answer);
-
-        etAreaLeft = findViewById(R.id.et_area_left);
-        etAreaTop = findViewById(R.id.et_area_top);
-        etAreaRight = findViewById(R.id.et_area_right);
-        etAreaBottom = findViewById(R.id.et_area_bottom);
-
+        etArea = findViewById(R.id.et_area);
         llScoreButtons = findViewById(R.id.ll_score_buttons);
         tvStatus = findViewById(R.id.tv_status);
-        tvCurrentScore = findViewById(R.id.tv_current_score);
-        tvTotalGraded = findViewById(R.id.tv_total_graded);
-
         btnStart = findViewById(R.id.btn_start);
         btnStop = findViewById(R.id.btn_stop);
-        btnSaveConfig = findViewById(R.id.btn_save_config);
-        btnAddScoreButton = findViewById(R.id.btn_add_score_button);
-        btnTestClick = findViewById(R.id.btn_test_click);
+        btnAddScore = findViewById(R.id.btn_add_score);
 
-        btnSaveConfig.setOnClickListener(v -> saveConfig());
-        btnAddScoreButton.setOnClickListener(v -> showAddScoreButtonDialog());
-        btnTestClick.setOnClickListener(v -> testClick());
+        btnAddScore.setOnClickListener(v -> showAddScoreDialog());
         btnStart.setOnClickListener(v -> startGrading());
         btnStop.setOnClickListener(v -> stopGrading());
     }
@@ -96,12 +79,8 @@ public class MainActivity extends AppCompatActivity {
         etApiKey.setText(configManager.getApiKey());
         etModelId.setText(configManager.getModelId());
         etReferenceAnswer.setText(configManager.getReferenceAnswer());
-
-        etAreaLeft.setText(String.valueOf(configManager.getAreaLeft()));
-        etAreaTop.setText(String.valueOf(configManager.getAreaTop()));
-        etAreaRight.setText(String.valueOf(configManager.getAreaRight()));
-        etAreaBottom.setText(String.valueOf(configManager.getAreaBottom()));
-
+        etArea.setText(configManager.getAreaLeft() + "," + configManager.getAreaTop() + "," + 
+                       configManager.getAreaRight() + "," + configManager.getAreaBottom());
         updateScoreButtonsList();
     }
 
@@ -109,18 +88,20 @@ public class MainActivity extends AppCompatActivity {
         configManager.setApiKey(etApiKey.getText().toString());
         configManager.setModelId(etModelId.getText().toString());
         configManager.setReferenceAnswer(etReferenceAnswer.getText().toString());
-
+        
         try {
-            int left = Integer.parseInt(etAreaLeft.getText().toString());
-            int top = Integer.parseInt(etAreaTop.getText().toString());
-            int right = Integer.parseInt(etAreaRight.getText().toString());
-            int bottom = Integer.parseInt(etAreaBottom.getText().toString());
-            configManager.setAnswerArea(left, top, right, bottom);
-        } catch (NumberFormatException e) {
-            Toast.makeText(this, "请输入有效的数字坐标", Toast.LENGTH_SHORT).show();
+            String[] parts = etArea.getText().toString().split(",");
+            if (parts.length == 4) {
+                configManager.setAnswerArea(
+                    Integer.parseInt(parts[0].trim()),
+                    Integer.parseInt(parts[1].trim()),
+                    Integer.parseInt(parts[2].trim()),
+                    Integer.parseInt(parts[3].trim())
+                );
+            }
+        } catch (Exception e) {
+            Toast.makeText(this, "截图区域格式错误", Toast.LENGTH_SHORT).show();
         }
-
-        Toast.makeText(this, "配置已保存", Toast.LENGTH_SHORT).show();
     }
 
     private void updateScoreButtonsList() {
@@ -129,20 +110,20 @@ public class MainActivity extends AppCompatActivity {
         
         for (int i = 0; i < buttons.size(); i++) {
             ConfigManager.ScoreButton btn = buttons.get(i);
-            View itemView = getLayoutInflater().inflate(R.layout.item_score_button, null);
-            
-            TextView tvInfo = itemView.findViewById(R.id.tv_score_button_info);
-            Button btnDelete = itemView.findViewById(R.id.btn_delete);
-            
-            tvInfo.setText(String.format("分值: %d, 坐标: (%d, %d)", btn.score, btn.x, btn.y));
+            TextView tv = new TextView(this);
+            tv.setText(String.format("分值 %d: (%d, %d) [删除]", btn.score, btn.x, btn.y));
+            tv.setPadding(8, 8, 8, 8);
             final int index = i;
-            btnDelete.setOnClickListener(v -> deleteScoreButton(index));
-            
-            llScoreButtons.addView(itemView);
+            tv.setOnClickListener(v -> {
+                buttons.remove(index);
+                configManager.setScoreButtons(buttons);
+                updateScoreButtonsList();
+            });
+            llScoreButtons.addView(tv);
         }
     }
 
-    private void showAddScoreButtonDialog() {
+    private void showAddScoreDialog() {
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_score_button, null);
         EditText etScore = dialogView.findViewById(R.id.et_score);
         EditText etX = dialogView.findViewById(R.id.et_x);
@@ -162,45 +143,17 @@ public class MainActivity extends AppCompatActivity {
                     configManager.setScoreButtons(buttons);
                     updateScoreButtonsList();
                 } catch (NumberFormatException e) {
-                    Toast.makeText(this, "请输入有效的数字", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "请输入有效数字", Toast.LENGTH_SHORT).show();
                 }
             })
             .setNegativeButton("取消", null)
             .show();
     }
 
-    private void deleteScoreButton(int index) {
-        List<ConfigManager.ScoreButton> buttons = configManager.getScoreButtons();
-        buttons.remove(index);
-        configManager.setScoreButtons(buttons);
-        updateScoreButtonsList();
-    }
-
-    private void testClick() {
-        if (!isAccessibilityEnabled()) {
-            Toast.makeText(this, "请先开启无障碍服务", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        List<ConfigManager.ScoreButton> buttons = configManager.getScoreButtons();
-        if (buttons.isEmpty()) {
-            Toast.makeText(this, "请先添加分值按钮", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        AutoClickService service = AutoClickService.getInstance();
-        if (service != null) {
-            ConfigManager.ScoreButton btn = buttons.get(0);
-            service.clickAtPosition(btn.x, btn.y);
-            Toast.makeText(this, "已尝试点击第一个分值按钮", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     private void startGrading() {
         if (!isAccessibilityEnabled()) {
             Toast.makeText(this, "请先开启无障碍服务", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
-            startActivity(intent);
+            startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
             return;
         }
 
@@ -210,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (configManager.getScoreButtons().isEmpty()) {
-            Toast.makeText(this, "请添加至少一个分值按钮", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "请添加分值按钮", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -263,16 +216,13 @@ public class MainActivity extends AppCompatActivity {
         screenCapture.captureCrop(left, top, right, bottom, new ScreenCapture.ScreenshotCallback() {
             @Override
             public void onScreenshot(Bitmap bitmap) {
-                tvStatus.setText("正在AI评分...");
+                tvStatus.setText("正在评分...");
                 
                 BailianAPI api = new BailianAPI(configManager.getApiKey(), configManager.getModelId());
                 api.scoreAnswer(bitmap, configManager.getReferenceAnswer(), new BailianAPI.ScoringCallback() {
                     @Override
                     public void onSuccess(int score) {
-                        runOnUiThread(() -> {
-                            tvCurrentScore.setText("当前评分: " + score);
-                            tvStatus.setText("正在点击分值按钮...");
-                        });
+                        runOnUiThread(() -> tvStatus.setText("评分: " + score));
                         
                         ConfigManager.ScoreButton btn = configManager.findClosestScoreButton(score);
                         if (btn != null) {
@@ -283,19 +233,14 @@ public class MainActivity extends AppCompatActivity {
                         }
                         
                         totalGraded++;
-                        runOnUiThread(() -> {
-                            tvTotalGraded.setText("已批阅: " + totalGraded);
-                            tvStatus.setText("等待下一份答卷...");
-                        });
+                        runOnUiThread(() -> tvStatus.setText("已完成 " + totalGraded + " 份，等待下一份..."));
                         
                         new android.os.Handler().postDelayed(() -> startGradingLoop(), 3000);
                     }
 
                     @Override
                     public void onError(String error) {
-                        runOnUiThread(() -> {
-                            tvStatus.setText("错误: " + error);
-                        });
+                        runOnUiThread(() -> tvStatus.setText("错误: " + error));
                         new android.os.Handler().postDelayed(() -> startGradingLoop(), 3000);
                     }
                 });
@@ -303,9 +248,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onError(String error) {
-                runOnUiThread(() -> {
-                    tvStatus.setText("截图错误: " + error);
-                });
+                runOnUiThread(() -> tvStatus.setText("截图错误: " + error));
                 new android.os.Handler().postDelayed(() -> startGradingLoop(), 3000);
             }
         });
@@ -326,12 +269,7 @@ public class MainActivity extends AppCompatActivity {
     private void updateUI() {
         btnStart.setEnabled(!isRunning);
         btnStop.setEnabled(isRunning);
-        
-        if (isRunning) {
-            tvStatus.setText("阅卷中...");
-        } else {
-            tvStatus.setText("等待开始");
-        }
+        tvStatus.setText(isRunning ? "批改中..." : "等待开始");
     }
 
     private void checkPermissions() {
@@ -340,10 +278,6 @@ public class MainActivity extends AppCompatActivity {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
             }
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-            }
-            
             if (!permissions.isEmpty()) {
                 ActivityCompat.requestPermissions(this, permissions.toArray(new String[0]), REQUEST_CODE_PERMISSIONS);
             }
@@ -353,14 +287,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_CODE_PERMISSIONS) {
-            for (int result : grantResults) {
-                if (result != PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "需要授予存储权限", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-            }
-        }
     }
 
     @Override

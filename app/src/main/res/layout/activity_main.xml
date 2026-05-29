@@ -9,28 +9,21 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="API配置"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp"/>
-
         <EditText
             android:id="@+id/et_api_key"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="API Key"
-            android:inputType="text"/>
+            android:inputType="text"
+            android:layout_marginBottom="8dp"/>
 
         <EditText
             android:id="@+id/et_model_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="模型ID (如: qwen-vl-plus)"
+            android:hint="模型ID"
             android:inputType="text"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginBottom="8dp"/>
 
         <EditText
             android:id="@+id/et_reference_answer"
@@ -38,151 +31,51 @@
             android:layout_height="wrap_content"
             android:hint="参考答案"
             android:inputType="textMultiLine"
-            android:minLines="3"
-            android:layout_marginTop="8dp"/>
-
-        <Button
-            android:id="@+id/btn_save_config"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="保存配置"
-            android:layout_gravity="end"
-            android:layout_marginTop="8dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="答案区域"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginTop="24dp"
+            android:minLines="2"
             android:layout_marginBottom="8dp"/>
 
-        <LinearLayout
+        <EditText
+            android:id="@+id/et_area"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/et_area_left"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="左"
-                android:inputType="number"
-                android:layout_marginEnd="4dp"/>
-
-            <EditText
-                android:id="@+id/et_area_top"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="上"
-                android:inputType="number"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="4dp"/>
-
-            <EditText
-                android:id="@+id/et_area_right"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="右"
-                android:inputType="number"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="4dp"/>
-
-            <EditText
-                android:id="@+id/et_area_bottom"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="下"
-                android:inputType="number"
-                android:layout_marginStart="4dp"/>
-        </LinearLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="分值按钮"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginTop="24dp"
+            android:hint="截图区域 (左,上,右,下)"
+            android:inputType="text"
             android:layout_marginBottom="8dp"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/btn_add_score_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="添加"/>
-
-            <Button
-                android:id="@+id/btn_test_click"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="测试点击"
-                android:layout_marginStart="8dp"/>
-        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/ll_score_buttons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginBottom="8dp"/>
 
-        <TextView
+        <Button
+            android:id="@+id/btn_add_score"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="状态"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="8dp"/>
+            android:text="+ 添加分值按钮"
+            android:layout_marginBottom="16dp"/>
 
         <TextView
             android:id="@+id/tv_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="等待开始"
-            android:textSize="16sp"/>
-
-        <TextView
-            android:id="@+id/tv_current_score"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="当前评分: -"
             android:textSize="16sp"
-            android:layout_marginTop="4dp"/>
-
-        <TextView
-            android:id="@+id/tv_total_graded"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="已批阅: 0"
-            android:textSize="16sp"
-            android:layout_marginTop="4dp"/>
+            android:layout_marginBottom="8dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginTop="16dp">
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/btn_start"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="开始阅卷"
-                android:layout_marginEnd="4dp"
+                android:text="开始批改"
+                android:layout_marginEnd="8dp"
                 android:backgroundTint="#4CAF50"/>
 
             <Button
@@ -192,18 +85,8 @@
                 android:layout_weight="1"
                 android:text="停止"
                 android:enabled="false"
-                android:layout_marginStart="4dp"
                 android:backgroundTint="#F44336"/>
         </LinearLayout>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="使用说明：\n1. 开启无障碍服务\n2. 配置API Key和模型ID\n3. 设置答案区域坐标\n4. 添加分值按钮坐标\n5. 点击开始阅卷"
-            android:textSize="14sp"
-            android:textColor="#757575"
-            android:layout_marginTop="24dp"
-            android:lineSpacingExtra="4dp"/>
 
     </LinearLayout>
 

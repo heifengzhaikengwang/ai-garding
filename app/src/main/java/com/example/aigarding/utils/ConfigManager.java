@@ -2,17 +2,25 @@ package com.example.aigarding.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ConfigManager {
-
     private static final String PREF_NAME = "AI_GARDING_CONFIG";
+    
     private static final String KEY_API_KEY = "api_key";
-    private static final String KEY_API_URL = "api_url";
-    private static final String KEY_TIMEOUT = "timeout";
+    private static final String KEY_MODEL_ID = "model_id";
+    private static final String KEY_REFERENCE_ANSWER = "reference_answer";
+    
+    // 答案区域坐标
     private static final String KEY_AREA_TOP = "area_top";
     private static final String KEY_AREA_LEFT = "area_left";
     private static final String KEY_AREA_BOTTOM = "area_bottom";
     private static final String KEY_AREA_RIGHT = "area_right";
+    
+    // 分值按钮配置
+    private static final String KEY_SCORE_BUTTONS_COUNT = "score_buttons_count";
+    private static final String KEY_SCORE_BUTTON_PREFIX = "score_button_";
 
     private SharedPreferences preferences;
 
@@ -28,20 +36,20 @@ public class ConfigManager {
         preferences.edit().putString(KEY_API_KEY, apiKey).apply();
     }
 
-    public String getApiUrl() {
-        return preferences.getString(KEY_API_URL, "https://dashscope.aliyuncs.com/api/text/image");
+    public String getModelId() {
+        return preferences.getString(KEY_MODEL_ID, "");
     }
 
-    public void setApiUrl(String apiUrl) {
-        preferences.edit().putString(KEY_API_URL, apiUrl).apply();
+    public void setModelId(String modelId) {
+        preferences.edit().putString(KEY_MODEL_ID, modelId).apply();
     }
 
-    public int getTimeout() {
-        return preferences.getInt(KEY_TIMEOUT, 30);
+    public String getReferenceAnswer() {
+        return preferences.getString(KEY_REFERENCE_ANSWER, "");
     }
 
-    public void setTimeout(int timeout) {
-        preferences.edit().putInt(KEY_TIMEOUT, timeout).apply();
+    public void setReferenceAnswer(String answer) {
+        preferences.edit().putString(KEY_REFERENCE_ANSWER, answer).apply();
     }
 
     public int getAreaTop() {
@@ -74,5 +82,65 @@ public class ConfigManager {
 
     public void setAreaRight(int right) {
         preferences.edit().putInt(KEY_AREA_RIGHT, right).apply();
+    }
+
+    public void setAnswerArea(int left, int top, int right, int bottom) {
+        setAreaLeft(left);
+        setAreaTop(top);
+        setAreaRight(right);
+        setAreaBottom(bottom);
+    }
+
+    public List<ScoreButton> getScoreButtons() {
+        List<ScoreButton> buttons = new ArrayList<>();
+        int count = preferences.getInt(KEY_SCORE_BUTTONS_COUNT, 0);
+        for (int i = 0; i < count; i++) {
+            int score = preferences.getInt(KEY_SCORE_BUTTON_PREFIX + i + "_score", 0);
+            int x = preferences.getInt(KEY_SCORE_BUTTON_PREFIX + i + "_x", 0);
+            int y = preferences.getInt(KEY_SCORE_BUTTON_PREFIX + i + "_y", 0);
+            buttons.add(new ScoreButton(score, x, y));
+        }
+        return buttons;
+    }
+
+    public void setScoreButtons(List<ScoreButton> buttons) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(KEY_SCORE_BUTTONS_COUNT, buttons.size());
+        for (int i = 0; i < buttons.size(); i++) {
+            ScoreButton btn = buttons.get(i);
+            editor.putInt(KEY_SCORE_BUTTON_PREFIX + i + "_score", btn.score);
+            editor.putInt(KEY_SCORE_BUTTON_PREFIX + i + "_x", btn.x);
+            editor.putInt(KEY_SCORE_BUTTON_PREFIX + i + "_y", btn.y);
+        }
+        editor.apply();
+    }
+
+    public ScoreButton findClosestScoreButton(int targetScore) {
+        List<ScoreButton> buttons = getScoreButtons();
+        if (buttons.isEmpty()) return null;
+        
+        ScoreButton closest = buttons.get(0);
+        int minDiff = Math.abs(targetScore - closest.score);
+        
+        for (ScoreButton btn : buttons) {
+            int diff = Math.abs(targetScore - btn.score);
+            if (diff < minDiff) {
+                minDiff = diff;
+                closest = btn;
+            }
+        }
+        return closest;
+    }
+
+    public static class ScoreButton {
+        public int score;
+        public int x;
+        public int y;
+
+        public ScoreButton(int score, int x, int y) {
+            this.score = score;
+            this.x = x;
+            this.y = y;
+        }
     }
 }

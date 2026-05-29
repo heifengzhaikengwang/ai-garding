@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/et_score"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="分值 (0-100)"
+        android:inputType="number"/>
+
+    <EditText
+        android:id="@+id/et_x"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="X坐标"
+        android:inputType="number"
+        android:layout_marginTop="8dp"/>
+
+    <EditText
+        android:id="@+id/et_y"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Y坐标"
+        android:inputType="number"
+        android:layout_marginTop="8dp"/>
+
+</LinearLayout>

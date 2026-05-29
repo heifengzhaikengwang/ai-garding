@@ -1,0 +1,21 @@
+# Ignore Gradle files
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+*.class
+*.log
+local.properties
+*.iml
+
+# Ignore sensitive files
+*.keystore
+keystore.properties
+
+# Ignore Android generated files
+bin/
+gen/
+out/
+
+# OS specific files
+.DS_Store
+Thumbs.db

@@ -3,6 +3,7 @@ package com.example.aigarding.service;
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.GestureDescription;
 import android.graphics.Path;
+import android.graphics.Stroke;
 import android.os.Build;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
@@ -43,10 +44,15 @@ public class AutoClickService extends AccessibilityService {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 Path path = new Path();
                 path.moveTo(x, y);
-                path.lineTo(x, y);
+                path.lineTo(x + 1, y + 1);
+                
+                Stroke stroke = new Stroke.Builder()
+                    .setPath(path)
+                    .setDuration(100)
+                    .build();
                 
                 GestureDescription.Builder builder = new GestureDescription.Builder();
-                builder.addPath(path);
+                builder.addStroke(stroke);
                 GestureDescription gesture = builder.build();
                 
                 return dispatchGesture(gesture, new AccessibilityService.GestureResultCallback() {

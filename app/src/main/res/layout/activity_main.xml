@@ -1,16 +1,16 @@
-&lt;?xml version="1.0" encoding="utf-8"?&gt;
-&lt;ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    android:background="#F5F5F5"&gt;
+    android:background="#F5F5F5">
 
-    &lt;LinearLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"&gt;
+        android:orientation="vertical">
 
-        &lt;TextView
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="AI自动阅卷"
@@ -18,9 +18,9 @@
             android:textStyle="bold"
             android:gravity="center"
             android:padding="16dp"
-            android:textColor="#333333" /&gt;
+            android:textColor="#333333" />
 
-        &lt;EditText
+        <EditText
             android:id="@+id/et_api_key"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -28,9 +28,9 @@
             android:inputType="text"
             android:padding="12dp"
             android:layout_marginBottom="8dp"
-            android:background="@android:drawable/edit_text" /&gt;
+            android:background="@android:drawable/edit_text" />
 
-        &lt;EditText
+        <EditText
             android:id="@+id/et_model_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -38,9 +38,9 @@
             android:inputType="text"
             android:padding="12dp"
             android:layout_marginBottom="8dp"
-            android:background="@android:drawable/edit_text" /&gt;
+            android:background="@android:drawable/edit_text" />
 
-        &lt;EditText
+        <EditText
             android:id="@+id/et_reference_answer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -49,9 +49,9 @@
             android:minLines="3"
             android:padding="12dp"
             android:layout_marginBottom="8dp"
-            android:background="@android:drawable/edit_text" /&gt;
+            android:background="@android:drawable/edit_text" />
 
-        &lt;EditText
+        <EditText
             android:id="@+id/et_interval"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -59,69 +59,69 @@
             android:inputType="number"
             android:padding="12dp"
             android:layout_marginBottom="16dp"
-            android:background="@android:drawable/edit_text" /&gt;
+            android:background="@android:drawable/edit_text" />
 
-        &lt;TextView
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="使用说明："
             android:textSize="14sp"
             android:textStyle="bold"
             android:paddingBottom="8dp"
-            android:textColor="#666666" /&gt;
+            android:textColor="#666666" />
 
-        &lt;TextView
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="1. 配置API信息后，点击「开始配置」\n2. 在悬浮窗中拖动矩形框选择截图区域\n3. 点击屏幕上的分值按钮记录位置\n4. 配置完成后点击「保存」\n5. 回到主界面点击「开始批改」"
             android:textSize="13sp"
             android:padding="12dp"
             android:background="#E0E0E0"
-            android:layout_marginBottom="16dp" /&gt;
+            android:layout_marginBottom="16dp" />
 
-        &lt;TextView
+        <TextView
             android:id="@+id/tv_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="等待开始"
             android:textSize="16sp"
             android:paddingBottom="4dp"
-            android:textColor="#666666" /&gt;
+            android:textColor="#666666" />
 
-        &lt;TextView
+        <TextView
             android:id="@+id/tv_count"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="已完成: 0"
             android:textSize="16sp"
             android:paddingBottom="16dp"
-            android:textColor="#666666" /&gt;
+            android:textColor="#666666" />
 
-        &lt;LinearLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:gap="12dp"&gt;
+            android:gap="12dp">
 
-            &lt;Button
+            <Button
                 android:id="@+id/btn_start_config"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="开始配置"
                 android:textSize="16sp"
                 android:padding="14dp"
-                android:backgroundTint="#2196F3" /&gt;
+                android:backgroundTint="#2196F3" />
 
-            &lt;Button
+            <Button
                 android:id="@+id/btn_start_grading"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="开始批改"
                 android:textSize="16sp"
                 android:padding="14dp"
-                android:backgroundTint="#4CAF50" /&gt;
+                android:backgroundTint="#4CAF50" />
 
-            &lt;Button
+            <Button
                 android:id="@+id/btn_stop"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -129,9 +129,9 @@
                 android:textSize="16sp"
                 android:padding="14dp"
                 android:enabled="false"
-                android:backgroundTint="#F44336" /&gt;
-        &lt;/LinearLayout&gt;
+                android:backgroundTint="#F44336" />
+        </LinearLayout>
 
-    &lt;/LinearLayout&gt;
+    </LinearLayout>
 
-&lt;/ScrollView&gt;
+</ScrollView>

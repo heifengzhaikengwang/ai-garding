@@ -1,16 +1,16 @@
-&lt;?xml version="1.0" encoding="utf-8"?&gt;
-&lt;manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"&gt;
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    &lt;uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32" /&gt;
-    &lt;uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32" /&gt;
-    &lt;uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /&gt;
-    &lt;uses-permission android:name="android.permission.FOREGROUND_SERVICE" /&gt;
-    &lt;uses-permission android:name="android.permission.VIBRATE" /&gt;
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
-    &lt;application
+    <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -19,40 +19,40 @@
         android:roundIcon="@android:drawable/ic_menu_view"
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar"
-        tools:targetApi="31"&gt;
+        tools:targetApi="31">
 
-        &lt;service
+        <service
             android:name=".service.AutoClickService"
             android:enabled="true"
             android:exported="true"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"&gt;
-            &lt;intent-filter&gt;
-                &lt;action android:name="android.accessibilityservice.AccessibilityService" /&gt;
-            &lt;/intent-filter&gt;
-            &lt;meta-data
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
                 android:name="android.accessibilityservice"
-                android:resource="@xml/accessibility_service_config" /&gt;
-        &lt;/service&gt;
+                android:resource="@xml/accessibility_service_config" />
+        </service>
 
-        &lt;service
+        <service
             android:name=".service.FloatingViewService"
             android:enabled="true"
-            android:exported="false" /&gt;
+            android:exported="false" />
 
-        &lt;activity
+        <activity
             android:name=".MainActivity"
-            android:exported="true"&gt;
-            &lt;intent-filter&gt;
-                &lt;action android:name="android.intent.action.MAIN" /&gt;
-                &lt;category android:name="android.intent.category.LAUNCHER" /&gt;
-            &lt;/intent-filter&gt;
-        &lt;/activity&gt;
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
-        &lt;activity
+        <activity
             android:name=".ScreenCaptureActivity"
             android:exported="false"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" /&gt;
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
-    &lt;/application&gt;
+    </application>
 
-&lt;/manifest&gt;
+</manifest>

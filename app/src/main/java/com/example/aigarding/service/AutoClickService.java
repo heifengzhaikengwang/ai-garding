@@ -1,6 +1,7 @@
 package com.example.aigarding.service;
 
 import android.accessibilityservice.AccessibilityService;
+import android.accessibilityservice.GestureDescription;
 import android.graphics.Path;
 import android.os.Build;
 import android.util.Log;
@@ -38,11 +39,34 @@ public class AutoClickService extends AccessibilityService {
     }
 
     public boolean clickAtPosition(int x, int y) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Path path = new Path();
-            path.moveTo(x, y);
-            return performGesture(path, 100, 100, null);
-        } else {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                Path path = new Path();
+                path.moveTo(x, y);
+                path.lineTo(x, y);
+                
+                GestureDescription.Builder builder = new GestureDescription.Builder();
+                builder.addPath(path);
+                GestureDescription gesture = builder.build();
+                
+                return dispatchGesture(gesture, new AccessibilityService.GestureResultCallback() {
+                    @Override
+                    public void onCompleted(GestureDescription gestureDescription) {
+                        super.onCompleted(gestureDescription);
+                        Log.d(TAG, "点击完成");
+                    }
+                    
+                    @Override
+                    public void onCancelled(GestureDescription gestureDescription) {
+                        super.onCancelled(gestureDescription);
+                        Log.d(TAG, "点击取消");
+                    }
+                }, null);
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "点击失败", e);
             return false;
         }
     }

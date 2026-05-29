@@ -11,14 +11,13 @@ public class ConfigManager {
     private static final String KEY_API_KEY = "api_key";
     private static final String KEY_MODEL_ID = "model_id";
     private static final String KEY_REFERENCE_ANSWER = "reference_answer";
+    private static final String KEY_INTERVAL = "interval";
     
-    // 答案区域坐标
     private static final String KEY_AREA_TOP = "area_top";
     private static final String KEY_AREA_LEFT = "area_left";
     private static final String KEY_AREA_BOTTOM = "area_bottom";
     private static final String KEY_AREA_RIGHT = "area_right";
     
-    // 分值按钮配置
     private static final String KEY_SCORE_BUTTONS_COUNT = "score_buttons_count";
     private static final String KEY_SCORE_BUTTON_PREFIX = "score_button_";
 
@@ -50,6 +49,14 @@ public class ConfigManager {
 
     public void setReferenceAnswer(String answer) {
         preferences.edit().putString(KEY_REFERENCE_ANSWER, answer).apply();
+    }
+
+    public int getInterval() {
+        return preferences.getInt(KEY_INTERVAL, 3);
+    }
+
+    public void setInterval(int seconds) {
+        preferences.edit().putInt(KEY_INTERVAL, seconds).apply();
     }
 
     public int getAreaTop() {

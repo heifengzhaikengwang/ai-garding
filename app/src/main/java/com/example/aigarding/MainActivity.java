@@ -43,9 +43,9 @@ public class MainActivity extends AppCompatActivity {
     private boolean isRunning = false;
     private int totalGraded = 0;
 
-    private EditText etApiKey, etModelId, etReferenceAnswer, etArea;
+    private EditText etApiKey, etModelId, etReferenceAnswer, etArea, etInterval;
     private LinearLayout llScoreButtons;
-    private TextView tvStatus;
+    private TextView tvStatus, tvCount;
     private Button btnStart, btnStop, btnAddScore;
 
     @Override
@@ -64,8 +64,10 @@ public class MainActivity extends AppCompatActivity {
         etModelId = findViewById(R.id.et_model_id);
         etReferenceAnswer = findViewById(R.id.et_reference_answer);
         etArea = findViewById(R.id.et_area);
+        etInterval = findViewById(R.id.et_interval);
         llScoreButtons = findViewById(R.id.ll_score_buttons);
         tvStatus = findViewById(R.id.tv_status);
+        tvCount = findViewById(R.id.tv_count);
         btnStart = findViewById(R.id.btn_start);
         btnStop = findViewById(R.id.btn_stop);
         btnAddScore = findViewById(R.id.btn_add_score);
@@ -81,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
         etReferenceAnswer.setText(configManager.getReferenceAnswer());
         etArea.setText(configManager.getAreaLeft() + "," + configManager.getAreaTop() + "," + 
                        configManager.getAreaRight() + "," + configManager.getAreaBottom());
+        etInterval.setText(String.valueOf(configManager.getInterval()));
         updateScoreButtonsList();
     }
 
@@ -101,6 +104,16 @@ public class MainActivity extends AppCompatActivity {
             }
         } catch (Exception e) {
             Toast.makeText(this, "截图区域格式错误", Toast.LENGTH_SHORT).show();
+        }
+        
+        try {
+            String intervalStr = etInterval.getText().toString();
+            if (!TextUtils.isEmpty(intervalStr)) {
+                int interval = Integer.parseInt(intervalStr);
+                configManager.setInterval(Math.max(1, interval));
+            }
+        } catch (Exception e) {
+            Toast.makeText(this, "间隔秒数格式错误", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -233,15 +246,18 @@ public class MainActivity extends AppCompatActivity {
                         }
                         
                         totalGraded++;
-                        runOnUiThread(() -> tvStatus.setText("已完成 " + totalGraded + " 份，等待下一份..."));
+                        runOnUiThread(() -> {
+                            tvCount.setText("已完成: " + totalGraded);
+                            tvStatus.setText("等待 " + configManager.getInterval() + " 秒后继续...");
+                        });
                         
-                        new android.os.Handler().postDelayed(() -> startGradingLoop(), 3000);
+                        new android.os.Handler().postDelayed(() -> startGradingLoop(), configManager.getInterval() * 1000L);
                     }
 
                     @Override
                     public void onError(String error) {
                         runOnUiThread(() -> tvStatus.setText("错误: " + error));
-                        new android.os.Handler().postDelayed(() -> startGradingLoop(), 3000);
+                        new android.os.Handler().postDelayed(() -> startGradingLoop(), configManager.getInterval() * 1000L);
                     }
                 });
             }
@@ -249,7 +265,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onError(String error) {
                 runOnUiThread(() -> tvStatus.setText("截图错误: " + error));
-                new android.os.Handler().postDelayed(() -> startGradingLoop(), 3000);
+                new android.os.Handler().postDelayed(() -> startGradingLoop(), configManager.getInterval() * 1000L);
             }
         });
     }
@@ -270,6 +286,9 @@ public class MainActivity extends AppCompatActivity {
         btnStart.setEnabled(!isRunning);
         btnStop.setEnabled(isRunning);
         tvStatus.setText(isRunning ? "批改中..." : "等待开始");
+        if (!isRunning) {
+            tvCount.setText("已完成: 0");
+        }
     }
 
     private void checkPermissions() {

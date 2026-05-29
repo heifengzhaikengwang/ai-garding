@@ -42,6 +42,14 @@
             android:inputType="text"
             android:layout_marginBottom="8dp"/>
 
+        <EditText
+            android:id="@+id/et_interval"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="间隔秒数"
+            android:inputType="number"
+            android:layout_marginBottom="8dp"/>
+
         <LinearLayout
             android:id="@+id/ll_score_buttons"
             android:layout_width="match_parent"
@@ -61,6 +69,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="等待开始"
+            android:textSize="16sp"
+            android:layout_marginBottom="4dp"/>
+
+        <TextView
+            android:id="@+id/tv_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="已完成: 0"
             android:textSize="16sp"
             android:layout_marginBottom="8dp"/>
 

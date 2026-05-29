@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">AI自动阅卷</string>
+    <string name="accessibility_service_description">AI自动阅卷服务，用于自动点击分值按钮</string>
 </resources>

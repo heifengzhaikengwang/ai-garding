@@ -60,7 +60,7 @@ public class ConfigManager {
     }
 
     public int getAreaTop() {
-        return preferences.getInt(KEY_AREA_TOP, 200);
+        return preferences.getInt(KEY_AREA_TOP, 100);
     }
 
     public void setAreaTop(int top) {
@@ -76,7 +76,7 @@ public class ConfigManager {
     }
 
     public int getAreaBottom() {
-        return preferences.getInt(KEY_AREA_BOTTOM, 800);
+        return preferences.getInt(KEY_AREA_BOTTOM, 400);
     }
 
     public void setAreaBottom(int bottom) {
@@ -84,7 +84,7 @@ public class ConfigManager {
     }
 
     public int getAreaRight() {
-        return preferences.getInt(KEY_AREA_RIGHT, 700);
+        return preferences.getInt(KEY_AREA_RIGHT, 500);
     }
 
     public void setAreaRight(int right) {
@@ -98,10 +98,18 @@ public class ConfigManager {
         setAreaBottom(bottom);
     }
 
-    public List<ScoreButton> getScoreButtons() {
-        List<ScoreButton> buttons = new ArrayList<>();
+    public int getAreaWidth() {
+        return getAreaRight() - getAreaLeft();
+    }
+
+    public int getAreaHeight() {
+        return getAreaBottom() - getAreaTop();
+    }
+
+    public List&lt;ScoreButton&gt; getScoreButtons() {
+        List&lt;ScoreButton&gt; buttons = new ArrayList&lt;&gt;();
         int count = preferences.getInt(KEY_SCORE_BUTTONS_COUNT, 0);
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i &lt; count; i++) {
             int score = preferences.getInt(KEY_SCORE_BUTTON_PREFIX + i + "_score", 0);
             int x = preferences.getInt(KEY_SCORE_BUTTON_PREFIX + i + "_x", 0);
             int y = preferences.getInt(KEY_SCORE_BUTTON_PREFIX + i + "_y", 0);
@@ -110,10 +118,10 @@ public class ConfigManager {
         return buttons;
     }
 
-    public void setScoreButtons(List<ScoreButton> buttons) {
+    public void setScoreButtons(List&lt;ScoreButton&gt; buttons) {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putInt(KEY_SCORE_BUTTONS_COUNT, buttons.size());
-        for (int i = 0; i < buttons.size(); i++) {
+        for (int i = 0; i &lt; buttons.size(); i++) {
             ScoreButton btn = buttons.get(i);
             editor.putInt(KEY_SCORE_BUTTON_PREFIX + i + "_score", btn.score);
             editor.putInt(KEY_SCORE_BUTTON_PREFIX + i + "_x", btn.x);
@@ -123,7 +131,7 @@ public class ConfigManager {
     }
 
     public ScoreButton findClosestScoreButton(int targetScore) {
-        List<ScoreButton> buttons = getScoreButtons();
+        List&lt;ScoreButton&gt; buttons = getScoreButtons();
         if (buttons.isEmpty()) return null;
         
         ScoreButton closest = buttons.get(0);
@@ -131,7 +139,7 @@ public class ConfigManager {
         
         for (ScoreButton btn : buttons) {
             int diff = Math.abs(targetScore - btn.score);
-            if (diff < minDiff) {
+            if (diff &lt; minDiff) {
                 minDiff = diff;
                 closest = btn;
             }
